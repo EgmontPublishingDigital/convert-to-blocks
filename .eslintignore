@@ -7,3 +7,4 @@ webpack.config.babel.js
 gulpfile.babel.js
 tests/cypress/*
 tests/bin/set-core-version.js
+assets/*

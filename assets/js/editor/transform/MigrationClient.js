@@ -26,25 +26,32 @@ class MigrationClient {
 
 		this.saved = true;
 
-		const { dispatch, subscribe } = wp.data;
-		const editor = dispatch('core/editor');
+		const { dispatch, select, subscribe } = wp.data;
+		const editor = dispatch("core/editor");
+		const saveResult = editor.savePost();
 
-		subscribe(this.didSave.bind(this));
-		editor.savePost();
+		if (saveResult && typeof saveResult.then === "function") {
+			saveResult.then(this.didSave.bind(this));
+			return;
+		}
+
+		const unsubscribe = subscribe(() => {
+			const didPostSaveRequestSucceed =
+				select("core/editor").didPostSaveRequestSucceed?.();
+
+			if (!didPostSaveRequestSucceed) {
+				return;
+			}
+
+			unsubscribe();
+			this.didSave();
+		});
 	}
 
 	/**
 	 * On Post save, runs the next post migration.
 	 */
 	didSave() {
-		const { select } = wp.data;
-		const isSavingPost = select('core/editor').isSavingPost();
-		const isAutosavingPost = select('core/editor').isAutosavingPost();
-
-		if (isAutosavingPost && !isSavingPost) {
-			return;
-		}
-
 		if (this.hasNext()) {
 			this.next();
 		}

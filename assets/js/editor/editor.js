@@ -1,5 +1,5 @@
-import ClassicBlockTransformer from './transform/ClassicBlockTransformer';
-import MigrationClient from './transform/MigrationClient';
+import ClassicBlockTransformer from "./transform/ClassicBlockTransformer";
+import MigrationClient from "./transform/MigrationClient";
 
 let loaded = false;
 
@@ -25,7 +25,10 @@ class ConvertToBlocksEditorSupport {
 	 * Activates the ConvertToBlocksEditorSupport
 	 */
 	enable() {
-		document.addEventListener('DOMContentLoaded', this.didBlockEditorLoad.bind(this));
+		document.addEventListener(
+			"DOMContentLoaded",
+			this.didBlockEditorLoad.bind(this),
+		);
 	}
 
 	/**
@@ -39,7 +42,7 @@ class ConvertToBlocksEditorSupport {
 			return;
 		}
 
-		registerPlugin('convert-to-blocks', {
+		registerPlugin("convert-to-blocks", {
 			render: () => {
 				// Don't render more than once, to avoid triggering multiple migrations
 				if (loaded) {
